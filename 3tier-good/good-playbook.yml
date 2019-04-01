@@ -1,0 +1,30 @@
+- hosts: all
+  name: configuration
+  gather_facts: false # remove later! speeds up testing
+  become: true
+
+  tasks:
+  - name: enable repos
+    template:
+      src: ./open_three-tier-app.repo
+      dest: /etc/yum.repos.d/open_three-tier-app.repo
+      mode: 0644
+
+- hosts: frontends 
+  tasks: 
+  - name : install frontend apps
+    include_role:
+     name: "haproxy"
+#
+- hosts: apps 
+  tasks: 
+  - name : install middleware apps
+    include_role:
+     name: "tomcat"
+
+- hosts: appdbs 
+  tasks: 
+  - name : install database apps
+    include_role:
+     name: "postgres"
+#
